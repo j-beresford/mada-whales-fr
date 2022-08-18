@@ -1,7 +1,6 @@
 rm(list=ls())
 source("packages.R")
 source("login-creds.R")
-source("call-data.R")
 
 # Define UI for application that draws a histogram
 fluidPage(theme=shinytheme("cerulean"),
