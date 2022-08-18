@@ -5,8 +5,7 @@ rawdata<-GET(url,authenticate(u,pw),progress())
 p<-jsonlite::parse_json(rawdata)
 results<-p$results
 
-maps<-data.frame(a=c(1,2,3))
+maps_test<-data.frame(a=c(1,2,3))
 
-saveRDS(maps,file="data_backup/maps.Rdata")
-put_object(file = "data_backup/maps.Rdata",
-           object = "maps.Rdata",bucket = s3BucketName)
+
+aws.s3::put_object(file = "maps_test",object="maps_test",bucket="mada-whales")
