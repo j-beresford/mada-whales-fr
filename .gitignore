@@ -2,6 +2,8 @@
 .Rhistory
 .RData
 .Renviron
+.Renvironq
+.Renviron.save
 .Ruserdata
 /login_creds.R
 .secrets
