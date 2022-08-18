@@ -1,24 +1,22 @@
-library(shiny)
+rm(list=ls())
+source("packages.R")
+source("login-creds.R")
+source("call-data.R")
 
 # Define UI for application that draws a histogram
-fluidPage(
+fluidPage(theme=shinytheme("cerulean"),
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+          navbarPage(title = "MSWP Tableau de Bord",collapsible = TRUE,
+                     navbarMenu("About",
+                                tabPanel("Instructions",
+                                         h3("The dashboard"),
+                                         uiOutput("about_naturedb"),
+                                         h3("Instructions"),
+                                         uiOutput("about_instructions"),
+                                         img(src="requin-baleine.jpg",width="100%")),
+                                tabPanel("Field Collect",
+                                         h3("Field Collect"),
+                                         uiOutput("about_fieldcollect")),
+                     ))
 )
+
