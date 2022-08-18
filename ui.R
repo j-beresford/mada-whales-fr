@@ -1,7 +1,6 @@
 rm(list=ls())
 source("packages.R")
-u<-Sys.getenv('U')
-pw<-Sys.getenv('PW')
+source("login-deets.R")
 source("call-data.R")
 
 # Define UI for application that draws a histogram
