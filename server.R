@@ -60,6 +60,170 @@ function(input, output, session) {
     }
   )
   
+ ######## Classifier form ############
+ 
+  updateSelectizeInput(session,"sighting_id",
+                       choices = mapUpdateUNClassified()%>%
+                         pull(sighting_id),selected = NA,server = T)
+  
+  
+  observeEvent(input$submit,{
+   
+    if (input$sighting_id=="" && input$i3s_id=="") {
+      output$error_message<-renderUI({
+          HTML(as.character(div(style="color: red;",
+          "Required: sighting ID and I3S ID")))})
+    } else if (input$sighting_id %in% is_not_allowed()$sighting_id)  {
+      output$error_message<-renderUI({
+          HTML(as.character(div(style="color: red;",
+          "Sighting ID has already been mapped")))})
+      updateSelectizeInput(session,"sighting_id",
+                           choices = mapUpdateUNClassified()%>%
+                             pull(sighting_id))
+      updateTextInput(session,"i3s_id",value = "")
+      
+    } else if (input$no_id_reason %in% c("advice_needed","unusable_sighting") && 
+               input$i3s_id!="") {
+      output$error_message<-renderUI({
+          HTML(as.character(div(style="color: red;",
+          "If I3S ID available, sighting should be marked 'done'.")))})
+      updateSelectizeInput(session,"sighting_id",
+                           choices = mapUpdateUNClassified()%>%
+                             pull(sighting_id))
+      updateTextInput(session,"i3s_id",value = "")
+      
+    } else if (!input$no_id_reason %in% c("advice_needed","unusable_sighting") &&
+               input$i3s_id=="") {
+      output$error_message<-renderUI({
+        HTML(as.character(div(style="color: red;",
+                              "No I3S ID is given but sighting filed as done.")))})
+      updateSelectizeInput(session,"sighting_id",
+                           choices = mapUpdateUNClassified()%>%
+                             pull(sighting_id))
+      updateTextInput(session,"i3s_id",value = "")
+      showNotification("Error",type="error")      
+    } else {    
+      new_row<-data.frame(
+        sighting_id=input$sighting_id,
+        i3s_id=input$i3s_id,
+        no_id_reason=input$no_id_reason)
+    
+      updateTextInput(session,"i3s_id",value = "")
+      
+      previous<-s3readRDS(object = "map.rds", bucket = "mada-whales")
+      mapping<-rbind(previous,new_row)
+      s3saveRDS(x = mapping, bucket = "mada-whales", object = "map.rds")
+      
+      updateSelectizeInput(session,"sighting_id",
+                           choices = mapUpdateUNClassified()%>%
+                             pull(sighting_id))
+      
+      showNotification("Submitted.",type="message")
+      }
+  })
+  
+  ############# Sightings (class, unclass, unusable) ##########
+  
+  ## Show table (unknown)
+  
+  output$unclassified_sightings <- renderDataTable({
+    input$submit
+    if (input$show_advice_needed==TRUE){
+      uc<-mapUpdateUNClassified()%>%
+        filter(no_id_reason=="advice_needed")
+    } else {
+      uc<-mapUpdateUNClassified()%>%
+        filter(!no_id_reason %in% c("advice_needed"))
+    }
+    uc},
+    options = list(scrollX=TRUE,scrollY=TRUE, scrollCollapse=TRUE),filter="top"
+  )
+  
+  ## Show table (unusable sightings)
+  output$unusable_sightings <- renderDataTable({
+    input$submit
+    mapUpdateUnusable()},
+    options = list(scrollX=TRUE,scrollY=TRUE, scrollCollapse=TRUE),filter="top"
+  )
+  
+  ## Show table (known)
+  output$classified_sightings <- renderDataTable({
+    input$submit
+    mapUpdateClassified(map_classified_vars)},
+    options = list(scrollX=TRUE, scrollCollapse=TRUE),filter="top"
+  )
+  
+  ############### Clean data download ###############
+  
+  output$summary_stats<-renderDataTable({
+    get_summary_stats(mapUpdateKnownSharks())},
+    options = list(scrollX=TRUE, scrollCollapse=TRUE)
+  )
+  
+  ## Table selection
+  cleanDatasetInput <- reactive({
+    switch(input$clean_dataset,
+           "Known sharks" = mapUpdateKnownSharks(),
+           "Merged yearly sharks" = mapUpdateUniqueYearlySightings(),
+           "Merged daily sharks" = mapUpdateUniqueTripSightings()
+    )
+  })
+  
+  ## Show table (main panel)
+  output$table_clean <- renderDT(
+    {cleanDatasetInput()},
+    filter = "top",
+    options = list(
+      pageLength = 10,
+      scrollX=TRUE
+    )
+  )
+  
+  
+  ## Download CSV
+  output$downloadCleanData <- downloadHandler(
+    filename = function() {
+      paste(input$clean_dataset, ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(cleanDatasetInput(), file, row.names = FALSE)
+    }
+  )
+  
+  
+  ### Graphs ####
+  
+  output$plotTrip <- renderPlot({
+    print(daily_dives_sst)
+  })
+  
+  output$plotSightings <- renderPlot({
+    print(sightings_sex)
+  })
+  
+  output$plotMegaf <- renderPlot({
+    print(megaf_all)
+  })
+  
+  output$plotCorrs <- renderPlot({
+    print(correls)
+  })
+  
+  output$plotMegafMap <- renderPlotly({
+    print(megaf_map)
+  })
+  
+  output$plotSharkMap <- renderPlotly({
+    print(shark_map)
+  })
+  
+  output$plotMegafDensity <- renderPlotly({
+    print(megaf_density)
+  })
+  
+  output$plotSharkDensity <- renderPlotly({
+    print(shark_density)
+  })
   
   
 }

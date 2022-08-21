@@ -52,7 +52,7 @@ mapUpdateUNClassified <- function() {
     mutate(t=n())%>%
     ungroup()%>%
     filter(t==1)%>%
-    filter(is.na(i3s_id))%>%
+    filter(is.na(i3s_id)|i3s_id=="")%>%
     filter(!no_id_reason %in% c("unusable_sighting"))%>%
     mutate(date=as_date(survey_start))%>%
     select(all_of(map_unclassified_vars))
@@ -61,7 +61,7 @@ mapUpdateUNClassified <- function() {
 
 
 mapUpdateUnusable <- function() {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   shark_sightings%>%
     full_join(mapping,by="sighting_id")%>%
     mutate(date=as_date(survey_start))%>%
@@ -72,16 +72,16 @@ mapUpdateUnusable <- function() {
 
 
 mapUpdateClassified <- function(vars) {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   shark_sightings%>%
     full_join(mapping,by="sighting_id")%>%
-    filter(!is.na(i3s_id))%>%
+    filter(!i3s_id=="")%>%
     mutate(date=as_date(survey_start))%>%
     select(all_of(vars))
 }
 
 is_not_allowed <- function() {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   not_allowed=mapping%>%
     filter(!no_id_reason %in% c("advice_needed"))
   return(not_allowed)
@@ -89,7 +89,7 @@ is_not_allowed <- function() {
 
 
 mapUpdateKnownSharks <- function() {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   unique_sharks<-mapping%>%
     filter(!no_id_reason %in% c("advice_needed","unusable_sighting"))%>%
     full_join(shark_sightings,by="sighting_id")%>%
@@ -119,7 +119,7 @@ mapUpdateKnownSharks <- function() {
 
 
 mapUpdateUniqueTripSightings <- function() {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   unique_sharks<-mapping%>%
     filter(!no_id_reason %in% c("advice_needed","unusable_sighting"))%>%
     full_join(shark_sightings,by="sighting_id")%>%
@@ -150,7 +150,7 @@ mapUpdateUniqueTripSightings <- function() {
 
 
 mapUpdateUniqueYearlySightings <- function() {
-  source("mapping.R")
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   unique_yearly_sharks<-mapping%>%
     filter(!no_id_reason %in% c("advice_needed","unusable_sighting"))%>%
     full_join(shark_sightings,by="sighting_id")%>%
