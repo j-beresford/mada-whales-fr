@@ -1,6 +1,9 @@
+fields <- c("sighting_id", "i3s_id","no_id_reason")
+
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
+###### ABOUT ########
   output$about_naturedb <- renderUI(HTML(
     "NatureDB is designed to be used in conjuction with the <a href='https://ee.kobotoolbox.org/x/PME7pT8m'>this survey</a>. It has several use cases: 
   <ul>
@@ -23,6 +26,40 @@ function(input, output, session) {
     <li>Check that your sighting information appears in the <i>classified sightings</i> tab s well as in the <i>clean data</i> tabs</li>
     </ol>"
   ))
+  
+  
+  ############### Raw Data download ###############
+  ## Raw data Table selection
+  datasetInput <- reactive({
+    switch(input$dataset,
+           "Dives" = displayTrip(trip_vars),
+           "Shark sightings" = displaySharkSightings(shark_sightings_vars),
+           "Shark scar sightings" = displaySharkScars(shark_scar_vars),
+           "Megafauna sightings" = displayMegaf(megaf_vars)
+    )
+  })
+  
+  ## Raw data - Show table (main panel)
+  output$table <- renderDT(
+    {datasetInput()},
+    filter = "top",
+    options = list(
+      pageLength = 10,
+      scrollX=TRUE,
+      scrollY=TRUE
+    )
+  )
+  
+  ## Raw data - Download CSV button
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste(input$dataset, ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(datasetInput(), file, row.names = FALSE)
+    }
+  )
+  
   
   
 }
