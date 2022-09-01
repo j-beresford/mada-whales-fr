@@ -8,6 +8,11 @@ source("graphs.R")
 
 # Define UI for application that draws a histogram
 fluidPage(theme=shinytheme("cerulean"),
+          
+    tags$head(
+      tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+    ),
+    
 
           navbarPage(title = "MSWP Tableau de Bord",collapsible = TRUE,
 
