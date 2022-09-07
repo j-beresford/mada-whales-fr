@@ -9,8 +9,9 @@ p<-jsonlite::parse_json(rawdata)
 results<-p$results
 
 tablet_ids=data.frame(
-  tablet_name=c("Justin Mobile","Orange","Amy Laptop","Justin Laptop"),
+  tablet_name=c("Justin Mobile","Vert","Orange","Amy Laptop","Justin Laptop"),
   client_identifier=c("collect:8FdYHpOdn4NijbBq",
+                   "collect:k0YytH7Ux8Qzx8C0",
                    "collect:LA3tDYnylZq5mFlv",
                    "ee.kobotoolbox.org:JWGByiliaVweMF0i",
                    "ee.kobotoolbox.org:xCPqKcFl8GV69TsD"))
