@@ -7,7 +7,7 @@ displayTrip <- function(vars){
   trip_display = df %>%
     mutate(date=as_date(survey_start))%>%
     mutate(all_sightings=lengths(sighting_repeat))%>%
-    select(all_of(vars))
+    select(any_of(vars))
   return(trip_display)
 }
 ############### Megafauna #####################
@@ -15,14 +15,14 @@ displayMegaf <- function(vars){
   megaf_display = megaf_sightings %>%
     mutate(date=as_date(survey_start))%>%
     filter(megaf_or_shark=='megaf') %>%
-    select(all_of(vars))%>%
+    select(any_of(vars))%>%
     arrange(desc(date))
   return(megaf_display)
 }
 ############# Shark scars data ###############
 displaySharkScars <- function(vars){
   shark_scars_display<-shark_scar_sightings%>%
-    select(all_of(vars))%>%
+    select(any_of(vars))%>%
     mutate(survey_start=as_date(survey_start))%>%
     rename(date=survey_start)%>%
     arrange(desc(date))
@@ -35,7 +35,7 @@ displaySharkSightings <- function(vars){
     mutate(survey_start=as_date(survey_start))%>%
     mutate(survey_end=as_date(survey_end))%>%
     filter(megaf_or_shark=="shark")%>%
-    select(all_of(vars))%>%
+    select(any_of(vars))%>%
     arrange(desc(survey_start))
   shark_sightings_display
 }
@@ -55,7 +55,7 @@ mapUpdateUNClassified <- function() {
     filter(is.na(i3s_id)|i3s_id=="")%>%
     filter(!no_id_reason %in% c("unusable_sighting"))%>%
     mutate(date=as_date(survey_start))%>%
-    select(all_of(map_unclassified_vars))
+    select(any_of(map_unclassified_vars))
   return(uc)
 }
 
@@ -67,7 +67,7 @@ mapUpdateUnusable <- function() {
     mutate(date=as_date(survey_start))%>%
     filter(no_id_reason %in% c("unusable_sighting")|left_id=="no")%>%
     mutate(no_id_reason=if_else(left_id=="no","No left ID",no_id_reason))%>%
-    select(all_of(map_unusable_vars))
+    select(any_of(map_unusable_vars))
 }
 
 
@@ -77,7 +77,7 @@ mapUpdateClassified <- function(vars) {
     full_join(mapping,by="sighting_id")%>%
     filter(!i3s_id=="")%>%
     mutate(date=as_date(survey_start))%>%
-    select(all_of(vars))
+    select(any_of(vars))
 }
 
 is_not_allowed <- function() {

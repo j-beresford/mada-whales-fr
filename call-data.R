@@ -17,6 +17,7 @@ tablet_ids=data.frame(
                    "ee.kobotoolbox.org:xCPqKcFl8GV69TsD"))
 
 numbers=c("meteo","sst","sea_state","trichodesmium_pct")
+#numbers=c("meteo","sst","sea_state") # DELETE THIS AT SOME POINT IN FUTURE
 
 df<-tibble(list_col=results)%>%
   hoist(list_col,'sighting_repeat')%>%

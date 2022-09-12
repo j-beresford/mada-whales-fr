@@ -108,9 +108,6 @@ fluidPage(theme=shinytheme("cerulean"),
         tabsetPanel(
           tabPanel("Sharks",plotOutput('plotSightings',width="100%")),
           tabPanel("Megafauna",plotOutput('plotMegaf',width="100%"))))
-)
-  
+)))
 
-    
-))
 
