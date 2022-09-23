@@ -54,3 +54,9 @@ shark_sightings=all_sightings%>%
 megaf_sightings=all_sightings%>%
   filter(megaf_or_shark=="megaf")
 
+
+shark_scar_sightings<-shark_sightings%>%
+  filter(scar_number!='NULL')%>%
+  unnest_wider(scar_number)%>%
+  unnest_wider(...1)%>%
+  rename_with(~str_remove(., 'sighting_repeat/scar_number/'))
