@@ -179,6 +179,37 @@ mapUpdateUniqueYearlySightings <- function() {
   return(unique_yearly_sharks)
 }
 
+mapUpdateUniqueWeeklySightings <- function() {
+  mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
+  unique_weekly_sharks<-mapping%>%
+    filter(!no_id_reason %in% c("advice_needed","unusable_sighting"))%>%
+    full_join(shark_sightings,by="sighting_id")%>%
+    filter(!is.na(i3s_id))%>%
+    mutate(week=floor_date(as_date(survey_start),"weeks",week_start = 1))%>%
+    select(week,i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey)%>%
+    mutate(size=as.numeric(size))%>%
+    group_by(i3s_id,week)%>%
+    mutate("Annual sightings"=n())%>%
+    mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
+    mutate(left_id=if_else(sum(left_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
+    mutate(right_id=if_else(sum(right_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
+    mutate(tag=sum(tag=="yes",na.rm=TRUE))%>%
+    mutate(drone=sum(drone=="yes",na.rm=TRUE))%>%
+    mutate(prey=sum(prey=="yes",na.rm=TRUE))%>%
+    mutate(size=mean(size,na.rm=TRUE))%>%
+    mutate(sex=case_when(
+      mean(sex=="male",na.rm=TRUE)>mean(sex=="female",na.rm=TRUE)~"male",
+      mean(sex=="male",na.rm=TRUE)<mean(sex=="female",na.rm=TRUE)~"female",
+      mean(sex=="male",na.rm=TRUE)==mean(sex=="female",na.rm=TRUE)~"Undetermined"))%>%
+    ungroup()%>%
+    distinct()%>%
+    rename("Week start"=week,"I3S ID"=i3s_id,"Size (mean)"=size,"Sex (mode)"=sex,
+           "Identified scars"=scars,"Left ID"=left_id,"Right ID"=right_id,
+           "Tag count"=tag,"Drone measurents"=drone,"Prey samples"=prey)
+  return(unique_weekly_sharks)
+}
+
+
 
 
 

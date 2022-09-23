@@ -164,8 +164,9 @@ function(input, output, session) {
   cleanDatasetInput <- reactive({
     switch(input$clean_dataset,
            "Known sharks" = mapUpdateKnownSharks(),
-           "Merged yearly sharks" = mapUpdateUniqueYearlySightings(),
-           "Merged daily sharks" = mapUpdateUniqueTripSightings()
+           "Merged yearly" = mapUpdateUniqueYearlySightings(),
+           "Merged weekly" = mapUpdateUniqueWeeklySightings(),
+           "Merged daily" = mapUpdateUniqueTripSightings()
     )
   })
   
