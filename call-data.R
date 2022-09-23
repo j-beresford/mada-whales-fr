@@ -9,15 +9,16 @@ p<-jsonlite::parse_json(rawdata)
 results<-p$results
 
 tablet_ids=data.frame(
-  tablet_name=c("Justin Mobile","Vert","Orange","Amy Laptop","Justin Laptop"),
+  tablet_name=c("Justin Mobile","Vert","Orange","Bleu","Amy Laptop","Justin Laptop","ClareEloy"),
   client_identifier=c("collect:8FdYHpOdn4NijbBq",
                    "collect:k0YytH7Ux8Qzx8C0",
                    "collect:LA3tDYnylZq5mFlv",
+                   "collect:GanYDasis6QSzhUT",
                    "ee.kobotoolbox.org:JWGByiliaVweMF0i",
-                   "ee.kobotoolbox.org:xCPqKcFl8GV69TsD"))
+                   "ee.kobotoolbox.org:xCPqKcFl8GV69TsD",
+                   "collect:W6Y1Q3ywxp1Fb3lf"))
 
 numbers=c("meteo","sst","sea_state","trichodesmium_pct")
-#numbers=c("meteo","sst","sea_state") # DELETE THIS AT SOME POINT IN FUTURE
 
 df<-tibble(list_col=results)%>%
   hoist(list_col,'sighting_repeat')%>%
