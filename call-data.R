@@ -27,8 +27,8 @@ df<-tibble(list_col=results)%>%
   hoist(list_col,'_tags')%>%
   hoist(list_col,'_notes')%>%
   hoist(list_col,'_validation_status')%>%
-  unnest_wider('_geolocation')%>%
-  unnest_wider(list_col)%>%
+  unnest_wider('_geolocation', names_repair = "unique")%>%
+  unnest_wider(list_col, names_repair = "unique")%>%
   rename("trip_id"="_id")%>%
   rename_with(~str_remove(., 'Faune/'))%>%
   left_join(tablet_ids,by="client_identifier")%>%
@@ -57,6 +57,6 @@ megaf_sightings=all_sightings%>%
 
 shark_scar_sightings<-shark_sightings%>%
   filter(scar_number!='NULL')%>%
-  unnest_wider(scar_number)%>%
-  unnest_wider(...1)%>%
+  unnest_longer(scar_number, names_repair = "unique")%>%#
+  unnest_wider(scar_number,names_repair="unique")%>%
   rename_with(~str_remove(., 'sighting_repeat/scar_number/'))
