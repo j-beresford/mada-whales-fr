@@ -2,10 +2,14 @@ fields <- c("sighting_id", "i3s_id","no_id_reason")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
+
+    tr <- function(text){ # translates text into current language
+    sapply(text,function(s) translation[[s]][[input$language]], USE.NAMES=FALSE)
+  }  
   
 ###### ABOUT ########
-  output$about_naturedb <- renderUI(HTML(
-    "NatureDB is designed to be used in conjuction with the <a href='https://ee.kobotoolbox.org/x/PME7pT8m'>this survey</a>. It has several use cases: 
+    
+  output$about_naturedb <- renderUI(HTML("NatureDB is designed to be used in conjuction with the <a href='https://ee.kobotoolbox.org/x/PME7pT8m'>this survey</a>. It has several use cases: 
   <ul>
   <li>Raw survey outputs are available to view in near real-time.</li>
   <li>Summary statistics and data visualisation are automised and available to view in the <i>clean data</i> and <i>graphs</i> tabs.</li>
@@ -159,6 +163,12 @@ function(input, output, session) {
     get_summary_stats(mapUpdateKnownSharks())},
     options = list(scrollX=TRUE, scrollCollapse=TRUE)
   )
+  
+  output$summary_stats_weekly<-renderDataTable({
+    get_summary_stats_weekly(mapUpdateUniqueWeeklySightings())},
+    options = list(scrollX=TRUE, scrollCollapse=TRUE)
+  )
+  
   
   ## Table selection
   cleanDatasetInput <- reactive({

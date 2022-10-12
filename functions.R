@@ -189,7 +189,7 @@ mapUpdateUniqueWeeklySightings <- function() {
     select(week,i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey)%>%
     mutate(size=as.numeric(size))%>%
     group_by(i3s_id,week)%>%
-    mutate("Annual sightings"=n())%>%
+    mutate("Total weekly sightings"=n())%>%
     mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
     mutate(left_id=if_else(sum(left_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
     mutate(right_id=if_else(sum(right_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
@@ -218,8 +218,9 @@ get_summary_stats<-function(df){
     mutate(Year="2022")%>%
     group_by(Year)%>%
     summarise(
-      "Total sharks"=n(),
-      "Sightings per shark"=round(mean(`Total sightings`),2),
+      "Classified sightings"=sum(`Total sightings`,na.rm=TRUE),
+      "Unique sightings"=n(),
+      "Sightings per shark"=round(mean(`Total sightings`,na.rm=TRUE),2),
       "Scar %"=round(100*mean(`Identified scars`=="yes"),2),
       "Average size"=round(mean( `Size (mean)`,na.rm=TRUE),2),
       "Male/Female ratio"=round(sum(`Sex (mode)`=="male",na.rm=TRUE)/
@@ -227,4 +228,23 @@ get_summary_stats<-function(df){
       "Tag %"=round(100*mean(`Tag count`,na.rm=TRUE),2),
       "Drone measurement %"=round(100*mean(`Drone measurements`,na.rm=TRUE),2),
       "Prey sample %"=round(100*mean(`Prey samples`,na.rm=TRUE),2))}
+
+
+get_summary_stats_weekly<-function(df){
+  summary_stats_weekly<-df%>%
+    group_by(`Week start`)%>%
+    summarise(
+      "Classified sightings"=sum(`Total weekly sightings`,na.rm=TRUE),
+      "Unique sightings"=n(),
+      "Sightings per shark"=round(mean(`Total weekly sightings`,na.rm=TRUE),2),
+      "Scar %"=round(100*mean(`Identified scars`=="yes",na.rm=TRUE),2),
+      "Average size"=round(mean( `Size (mean)`,na.rm=TRUE),2),
+      "Male/Female ratio"=round(sum(`Sex (mode)`=="male",na.rm=TRUE)/
+                                  sum(`Sex (mode)`=="female",na.rm=TRUE),2),
+      "Tag %"=round(100*mean(`Tag count`,na.rm=TRUE),2),
+      "Drone measurement %"=mean(`Drone measurents`,na.rm=TRUE),
+      "Prey sample %"=round(100*mean(`Prey samples`,na.rm=TRUE),2))%>%
+    arrange(desc(`Week start`))}
+
+
 

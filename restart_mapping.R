@@ -5,7 +5,7 @@ mapping_old<-s3readRDS(object = "map.rds", bucket = "mada-whales")
 
 #Make changes
 map<-mapping_old%>%
-  filter(!sighting_id %in% c("6952234d-dd3c"))
+  filter(!sighting_id %in% c("8b7c75d4-9d64"))
 
 
 
