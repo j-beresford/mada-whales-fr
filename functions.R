@@ -94,10 +94,12 @@ mapUpdateKnownSharks <- function() {
     filter(!no_id_reason %in% c("advice_needed","unusable_sighting"))%>%
     full_join(shark_sightings,by="sighting_id")%>%
     filter(!is.na(i3s_id))%>%
-    select(i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey)%>%
+    select(i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey,survey_start)%>%
     mutate(size=as.numeric(size))%>%
+    mutate(survey_start=as_date(survey_start))%>%
     group_by(i3s_id)%>%
     mutate("Total sightings"=n())%>%
+    mutate(survey_start=min(survey_start))%>%
     mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
     mutate(left_id=if_else(sum(left_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
     mutate(right_id=if_else(sum(right_id=="yes",na.rm=TRUE)>0,"yes","no"))%>%
@@ -112,7 +114,8 @@ mapUpdateKnownSharks <- function() {
     ungroup()%>%
     distinct()%>%
     rename("I3S ID"=i3s_id,"Size (mean)"=size,"Sex (mode)"=sex,
-           "Identified scars"=scars,"Left ID"=left_id,"Right ID"=right_id,
+           "First sighting"=survey_start,"Identified scars"=scars,
+           "Left ID"=left_id,"Right ID"=right_id,
            "Tag count"=tag,"Drone measurements"=drone,"Prey samples"=prey)
   return(unique_sharks)
 }
