@@ -248,3 +248,11 @@ get_summary_stats_weekly<-function(df){
 
 
 
+delete_sighting <- function(id_for_deletion){
+  mapping_old<-s3readRDS(object = "map.rds", bucket = "mada-whales")
+  
+  map<-mapping_old%>%
+    filter(!sighting_id %in% id_for_deletion)
+  
+  s3saveRDS(x = map, bucket = "mada-whales", object = "map.rds")  
+}

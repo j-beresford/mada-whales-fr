@@ -121,15 +121,55 @@ function(input, output, session) {
       updateSelectizeInput(session,"sighting_id",
                            choices = mapUpdateUNClassified()%>%
                              pull(sighting_id))
-      
+      updateSelectizeInput(session,"sighting_deletion", 
+                           choices = mapUpdateClassified(map_classified_vars)%>%
+                             full_join(mapUpdateUnusable())%>%
+                             pull(sighting_id))
       showNotification("Submitted.",type="message")
       }
+  })
+  
+  observeEvent(input$delete, {
+    showModal(modalDialog(
+      p("Are you sure you want to delete this sighting?"),
+      p("Êtes-vous sûr de vouloir supprimer cette observation?"),
+      title="Warning / Attention !",
+      footer = tagList(actionButton("confirmDelete", "Delete",
+                  style="color: #f54257; border-color: #f54257"),
+                       modalButton("Cancel")
+      )
+    ))
+  })
+  
+  observeEvent(input$confirmDelete, {
+    delete_sighting(input$sighting_deletion)
+    removeModal()
+    updateSelectizeInput(session,"sighting_deletion", 
+                         choices = mapUpdateClassified(map_classified_vars)%>%
+                           full_join(mapUpdateUnusable())%>%
+                           pull(sighting_id))
+    showNotification("Sighting deleted.",type="error")
+    updateSelectizeInput(session,"sighting_id",
+                         choices = mapUpdateUNClassified()%>%
+                           pull(sighting_id))
+    output$unclassified_sightings <- renderDataTable({
+      input$submit
+      if (input$show_advice_needed==TRUE){
+        uc<-mapUpdateUNClassified()%>%
+          filter(no_id_reason=="advice_needed")
+      } else {
+        uc<-mapUpdateUNClassified()%>%
+          filter(!no_id_reason %in% c("advice_needed"))
+      }
+      uc},
+      options = list(scrollX=TRUE,scrollY=TRUE, scrollCollapse=TRUE),filter="top"
+    )  
   })
   
   ############# Sightings (class, unclass, unusable) ##########
   
   ## Show table (unknown)
-  
+
   output$unclassified_sightings <- renderDataTable({
     input$submit
     if (input$show_advice_needed==TRUE){

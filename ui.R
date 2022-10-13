@@ -44,6 +44,7 @@ fluidPage(theme=shinytheme("cerulean"),
                    ),
           tabPanel("Classifier Form",
                    sidebarPanel(
+                     h4("Classify a sighting"),
                      selectizeInput("sighting_id", "Enter sighting ID", 
                           choices = mapUpdateUNClassified()%>%
                             pull(sighting_id),
@@ -59,8 +60,17 @@ fluidPage(theme=shinytheme("cerulean"),
                                   "Discarded - Photo is unusable"="unusable_sighting"),
                                 selected = ""),
                    uiOutput("error_message"),
-                   hr(),
-                  actionButton("submit","Submit")),
+                  actionButton("submit","Submit"),
+                  hr(),
+                  h4("Delete a classified sighting"),
+                  selectizeInput("sighting_deletion", "Enter sighting ID", 
+                               choices = mapUpdateClassified(map_classified_vars)%>%
+                                 full_join(mapUpdateUnusable())%>%
+                                 pull(sighting_id),
+                                options = list(
+                                  placeholder = 'Please type or copy/paste ID',
+                                onInitialize = I('function() { this.setValue(""); }'))),
+                  actionButton("delete","Delete")),
                   mainPanel(
                     h3("Unclassified sightings"),
                     checkboxInput("show_advice_needed",
