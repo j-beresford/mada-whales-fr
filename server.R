@@ -241,8 +241,18 @@ function(input, output, session) {
     }
   )
   
+  ##### Shark Scars #########
   
   ### Graphs ####
+  output$clean_shark_scars <- renderDT(
+    {mapUpdateScars()},
+    filter = "top",
+    options = list(
+      pageLength = 10,
+      scrollX=TRUE
+    )
+  )
+  
   
   output$plotTrip <- renderPlot({
     print(daily_dives_sst)

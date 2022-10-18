@@ -80,6 +80,18 @@ mapUpdateClassified <- function(vars) {
     select(any_of(vars))
 }
 
+mapUpdateScars <- function(){
+  known<-mapUpdateClassified(map_classified_vars)
+  scars<-displaySharkScars(shark_scar_vars)
+  test<-scars%>%
+    full_join(known,by=c("sighting_id","tablet_name","observer",
+                         "trip_id","date","scars"))%>%
+    arrange(desc(date))%>%
+    filter(scars=="yes")%>%
+    select(-shark_name_known,-sighting_number,-tablet_name,-observer,
+           -trip_id,-operator,-scars)
+}
+
 is_not_allowed <- function() {
   mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   not_allowed=mapping%>%
