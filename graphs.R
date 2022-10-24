@@ -110,5 +110,3 @@ shark_map<-ggplotly(shark_map)%>%layout(height=600,width=600)
 
 shark_density<-map+geom_density2d(data=shark_cords,aes(x=long, y=lat))
 shark_density<-ggplotly(shark_density)%>%layout(height=600,width=600)
-
-
