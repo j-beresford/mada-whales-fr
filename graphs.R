@@ -26,8 +26,9 @@ sightings_sex <-mapUpdateUniqueTripSightings()%>%
 
 megaf_all<-megaf_sightings%>%
   mutate(espece=str_replace_all(espece,"_"," "))%>%
-  mutate(espece=fct_infreq(espece))%>%
+  filter(!is.na(espece))%>%
   mutate(espece=str_to_title(espece))%>%
+  mutate(espece=fct_infreq(espece))%>%
   mutate(date=as_date(survey_start))%>%
   ggplot(aes(date,fill=espece))+
   geom_bar(stat="count",fill="#00BCFF")+
