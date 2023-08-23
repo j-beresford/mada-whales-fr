@@ -5,6 +5,8 @@ source("call-data.R")
 source("functions.R")
 source("table_vars.R")
 source("graphs.R")
+source("client_info.R")
+
 
 # Define UI for application that draws a histogram
 fluidPage(theme=shinytheme("cerulean"),
@@ -36,7 +38,8 @@ fluidPage(theme=shinytheme("cerulean"),
                                                choices = list("Dives",
                                                               "Shark sightings",
                                                               "Shark scar sightings",
-                                                              "Megafauna sightings"),
+                                                              "Megafauna sightings",
+                                                              "Client information"),
                                                selected = "Shark sightings"),
                                 downloadButton("downloadData", "Download"),
                                 width=3),

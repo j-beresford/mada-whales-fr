@@ -39,7 +39,8 @@ function(input, output, session) {
            "Dives" = displayTrip(trip_vars),
            "Shark sightings" = displaySharkSightings(shark_sightings_vars),
            "Shark scar sightings" = displaySharkScars(shark_scar_vars),
-           "Megafauna sightings" = displayMegaf(megaf_vars)
+           "Megafauna sightings" = displayMegaf(megaf_vars),
+           "Client information" = df_client
     )
   })
   
