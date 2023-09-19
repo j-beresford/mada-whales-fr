@@ -31,6 +31,7 @@ df<-tibble(list_col=results)%>%
   unnest_wider('_geolocation', names_repair = "unique")%>%
   unnest_wider(list_col, names_repair = "unique")%>%
   rename("trip_id"="_id")%>%
+  select(-'Faune/trichodesmium_pct')%>%
   rename_with(~str_remove(., 'Faune/'))%>%
   left_join(tablet_ids,by="client_identifier")%>%
   mutate_at(numbers,as.numeric)%>%
