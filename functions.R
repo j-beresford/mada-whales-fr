@@ -34,7 +34,7 @@ displaySharkSightings <- function(vars){
   shark_sightings_display<-all_sightings%>%
     mutate(survey_start=as_date(survey_start))%>%
     mutate(survey_end=as_date(survey_end))%>%
-    filter(megaf_or_shark=="shark")%>%
+    filter(megaf_or_shark %in% c("shark", "chasse") & !is.na(sighting_id))%>%
     select(any_of(vars))%>%
     arrange(desc(survey_start))
   shark_sightings_display
@@ -75,7 +75,7 @@ mapUpdateClassified <- function(vars) {
   mapping<-s3readRDS(object = "map.rds", bucket = "mada-whales")
   shark_sightings%>%
     full_join(mapping,by="sighting_id")%>%
-    filter(!i3s_id=="")%>%
+    filter(str_detect(i3s_id, "^MD-\\d{3}"))%>%
     mutate(date=as_date(survey_start))%>%
     select(any_of(vars))
 }
@@ -225,12 +225,9 @@ mapUpdateUniqueWeeklySightings <- function() {
 }
 
 
-
-
-
 get_summary_stats<-function(df){
   summary_stats<-df%>%
-    mutate(Year="2022")%>%
+    mutate(Year="All Years")%>%
     group_by(Year)%>%
     summarise(
       "Classified sightings"=sum(`Total sightings`,na.rm=TRUE),

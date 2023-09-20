@@ -64,6 +64,9 @@ correls<-displayTrip(trip_vars)%>%
 
 
 
+
+
+
 map<-map_data("world","Madagascar")%>%
   filter(!subregion  %in% c("Ile Sainte-Marie"))%>%
   mutate(subregion=if_else(is.na(subregion),"Mainland",subregion))%>%

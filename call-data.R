@@ -51,7 +51,7 @@ all_sightings=df%>%
 
 
 shark_sightings=all_sightings%>%
-  filter(megaf_or_shark=="shark")
+  filter(megaf_or_shark %in% c("shark", "chasse") & !is.na(sighting_id))
 
 megaf_sightings=all_sightings%>%
   filter(megaf_or_shark=="megaf")
