@@ -267,6 +267,13 @@ function(input, output, session) {
     print(sharks_by_size_sex)
   })
   
+  output$plotRecurrence <- renderPlot({
+    print(recurrence_rates)
+  })
+  
+  output$plotNewSharkRate <- renderPlot({
+    print(new_sharks_by_year)
+  })
   
   output$plotMegaf <- renderPlot({
     print(megaf_all)
