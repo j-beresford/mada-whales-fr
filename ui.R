@@ -118,7 +118,7 @@ fluidPage(theme=shinytheme("cerulean"),
        tabPanel("Trips",
         tabsetPanel(
           tabPanel("Trip counts",plotOutput('plotTrip',width="100%")),
-          tabPanel("Correlations",plotOutput('plotCorrs',width="100%")))),
+          tabPanel("Distributions",plotOutput('plotCorrs',width="100%")))),
        tabPanel("Maps",
         tabsetPanel(
           tabPanel("Shark sightings",plotlyOutput('plotSharkMap',width="100%")),
@@ -127,7 +127,8 @@ fluidPage(theme=shinytheme("cerulean"),
           tabPanel("Megafauna",plotlyOutput('plotMegafMap',width="100%")))),
        tabPanel("Sightings",
         tabsetPanel(
-          tabPanel("Sharks",plotOutput('plotSightings',width="100%")),
+          tabPanel("Annual sightings",plotOutput('plotSightings',width="100%")),
+          tabPanel("Known Sharks",plotOutput('plotSharks',width="100%")),
           tabPanel("Megafauna",plotOutput('plotMegaf',width="100%"))))
 )))
 

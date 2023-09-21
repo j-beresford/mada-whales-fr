@@ -263,12 +263,17 @@ function(input, output, session) {
     print(sightings_sex)
   })
   
+  output$plotSharks <- renderPlot({
+    print(sharks_by_size_sex)
+  })
+  
+  
   output$plotMegaf <- renderPlot({
     print(megaf_all)
   })
   
   output$plotCorrs <- renderPlot({
-    print(correls)
+    print(distributions)
   })
   
   output$plotMegafMap <- renderPlotly({

@@ -1,68 +1,71 @@
 daily_dives_sst<-displayTrip(trip_vars)%>%
-  group_by(date)%>%
-  summarise(mean_sst=mean(sst,na.rm=TRUE),trips=n())%>%
-  ungroup()%>%
-  ggplot(aes(date,trips,fill=mean_sst))+
-  geom_col()+
-  scale_fill_distiller(type = "seq",palette = "Blues",direction = 1)+
+  mutate(year=year(date))%>%
+  ggplot(aes(year,fill=operator))+
+  geom_bar()+
   theme_minimal()+
   theme(text = element_text(size=14),
         panel.grid = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())+
-  labs(y="Daily Dives",x="",fill="Sea surface temperature")
+  labs(y="Annual Expeditions",x="",fill="Operator")+
+  scale_fill_brewer(type="qual",palette = "Pastel1")
+  
 
 sightings_sex <-mapUpdateUniqueTripSightings()%>%
   mutate(`Sex (mode)`=if_else(is.na(`Sex (mode)`),"Undetermined",`Sex (mode)`))%>%
-  ggplot(aes(Date,fill=`Sex (mode)`))+
-  geom_bar(stat = "count")+
+  mutate(year=year(Date))%>%
+  ggplot(aes(year,fill=`Sex (mode)`))+
+  geom_bar()+
   theme_minimal()+
   theme(text = element_text(size=14),
         panel.grid = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())+
   scale_fill_brewer(type="qual",palette = "Pastel1")+
-  labs(y="Unique daily sightings",x="")
+  labs(y="Unique annual sightings",x="")
+
+
+sharks_by_size_sex<-mapUpdateUniqueYearlySightings()%>%
+  mutate(`Sex (mode)`=if_else(is.na(`Sex (mode)`),"Undetermined",`Sex (mode)`))%>%
+  filter(!Year %in% c(2021,2023))%>%
+  filter(`Size (mean)`>0)%>%
+  ggplot(aes(`Size (mean)`,`Sex (mode)`,fill=`Sex (mode)`))+
+  geom_boxplot(show.legend = FALSE)+
+  theme_minimal()+
+  labs(x="Size (meters)",y="")+
+  facet_wrap(.~Year,ncol=1)+
+  scale_fill_brewer(type="qual",palette = "Pastel1")
 
 megaf_all<-megaf_sightings%>%
   mutate(espece=str_replace_all(espece,"_"," "))%>%
   filter(!is.na(espece))%>%
   mutate(espece=str_to_title(espece))%>%
-  mutate(espece=fct_infreq(espece))%>%
   mutate(date=as_date(survey_start))%>%
-  ggplot(aes(date,fill=espece))+
-  geom_bar(stat="count",fill="#00BCFF")+
-  facet_wrap(.~espece)+
+  mutate(year=year(date))%>%
+  ggplot(aes(year,fill=espece))+
+  geom_bar()+
   theme_minimal()+
-  theme(legend.position = "none",
-        strip.background = element_rect(fill="#00BCFF",color="white"),
-        strip.text = element_text(color="white",size=14),
-        text = element_text(size=14),
-        panel.grid.major = element_blank(),
+  theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())+
-  labs(x="",y="Number of sightings")
+  labs(x="",y="Number of sightings (annual)",fill="Species")
 
 
-
-correls<-displayTrip(trip_vars)%>%
+distributions<-displayTrip(trip_vars)%>%
   select(all_sightings,sst,meteo,sea_state,trichodesmium_pct)%>%
   rename(sea_surface_temperature=sst)%>%
   gather(key=var,value=val,-all_sightings)%>%
-  ggplot(aes(val,all_sightings))+
-  geom_point(color="#00BCFF")+
-  geom_smooth(method="lm",color="#00BCFF",se=TRUE,fill="lightblue",size=0.5)+
-  facet_wrap(.~var,scales = "free")+
+  ggplot(aes(val))+
+  geom_density(show.legend = FALSE, fill="#00BCFF")+
+  facet_wrap(.~var, scales = "free")+
+  labs(x="",y="Expeditions,kernel density")+
   theme_minimal()+
   theme(legend.position = "none",
         strip.background = element_rect(fill="#00BCFF",color="white"),
         strip.text = element_text(color="white",size=14),
         text = element_text(size=14),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x="",y="Number of sightings")
-
-
-
+        panel.grid.minor = element_blank())
+  
 
 
 
