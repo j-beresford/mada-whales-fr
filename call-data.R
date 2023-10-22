@@ -47,8 +47,9 @@ all_sightings=df%>%
   rename(sighting_id=shark_uuid)%>%
   mutate(sighting_id=str_remove_all(sighting_id,"uuid:"))%>%
   mutate(sighting_id=str_sub(sighting_id,1,13))%>%
-  mutate_at(numbers,as.numeric)
-
+  mutate_at(numbers,as.numeric)%>%
+  mutate(survey_start=coalesce(survey_start,start))%>%
+  mutate(survey_end=coalesce(survey_end,end))
 
 shark_sightings=all_sightings%>%
   filter(megaf_or_shark %in% c("shark", "chasse") & !is.na(sighting_id))
