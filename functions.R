@@ -55,7 +55,8 @@ mapUpdateUNClassified <- function() {
     filter(is.na(i3s_id)|i3s_id=="")%>%
     filter(!no_id_reason %in% c("unusable_sighting"))%>%
     mutate(date=as_date(survey_start))%>%
-    select(any_of(map_unclassified_vars))
+    select(any_of(map_unclassified_vars))%>%
+    rename(notes = surrounding_objects)
   return(uc)
 }
 
