@@ -45,6 +45,7 @@ shark_sightings_vars<-c("sighting_id",
                         "boats_min",
                         "boats_max",
                         "biopsy",
+                        "biopsy_number",
                         "tag",
                         "tag_no",
                         "prey",
@@ -73,7 +74,8 @@ map_unclassified_vars<-c("sighting_id",
                          "size",
                          "scars",
                          "shark_name_known",
-                         "no_id_reason")
+                         "no_id_reason",
+                         "surrounding_objects")
 
 
 map_classified_vars<-c("sighting_id",
