@@ -1,3 +1,4 @@
+
 fields <- c("sighting_id", "i3s_id","no_id_reason")
 
 # Define server logic required to draw a histogram
@@ -301,3 +302,4 @@ function(input, output, session) {
   
   
 }
+

@@ -21,6 +21,8 @@ tablet_ids=data.frame(
 
 numbers=c("meteo","sst","sea_state","trichodesmium_pct")
 
+date_fixes<-read_rds("dates.R")
+
 df<-tibble(list_col=results)%>%
   hoist(list_col,'sighting_repeat')%>%
   hoist(list_col,'_attachments')%>%
@@ -36,7 +38,10 @@ df<-tibble(list_col=results)%>%
   left_join(tablet_ids,by="client_identifier")%>%
   mutate_at(numbers,as.numeric)%>%
   mutate_if(is.character,as.factor)%>%
-  mutate(trip_id=as_factor(trip_id))
+  mutate(trip_id=as_factor(trip_id))%>%
+  mutate(survey_start=ymd_hms(survey_start))%>%
+  full_join(date_fixes, by="trip_id")%>%
+  mutate(survey_start=if_else(is.na(matched_dates),survey_start,matched_dates))
 
 sighting_numbers<-c("sighting_number","size","boats_min","boats_max")
 
@@ -48,6 +53,7 @@ all_sightings=df%>%
   mutate(sighting_id=str_remove_all(sighting_id,"uuid:"))%>%
   mutate(sighting_id=str_sub(sighting_id,1,13))%>%
   mutate_at(numbers,as.numeric)%>%
+  mutate(start=ymd_hms(start))%>%
   mutate(survey_start=coalesce(survey_start,start))%>%
   mutate(survey_end=coalesce(survey_end,end))
 

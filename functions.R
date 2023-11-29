@@ -111,6 +111,7 @@ mapUpdateKnownSharks <- function() {
     mutate(size=as.numeric(size))%>%
     mutate(survey_start=as_date(survey_start))%>%
     group_by(i3s_id)%>%
+    mutate("First sighting" = year(min(survey_start)))%>%
     mutate("Total sightings"=n())%>%
     mutate(survey_start=min(survey_start))%>%
     mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
@@ -129,7 +130,8 @@ mapUpdateKnownSharks <- function() {
     rename("I3S ID"=i3s_id,"Size (mean)"=size,"Sex (mode)"=sex,
            "First sighting"=survey_start,"Identified scars"=scars,
            "Left ID"=left_id,"Right ID"=right_id,
-           "Tag count"=tag,"Drone measurements"=drone,"Prey samples"=prey)
+           "Tag count"=tag,"Drone measurements"=drone,"Prey samples"=prey)%>%
+    select("First sighting", everything())
   return(unique_sharks)
 }
 

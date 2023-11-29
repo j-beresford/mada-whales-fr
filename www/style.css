@@ -2,6 +2,10 @@
   color:#282828;
 }
 
+input {
+    width: 100px !important;
+}
+
 body {
   background-color: white;}
 

@@ -89,7 +89,10 @@ map_classified_vars<-c("sighting_id",
                        "sex",
                        "size",
                        "scars",
-                       "shark_name_known")
+                       "biopsy",
+                       "biopsy_number",
+                       "tag",
+                       "tag_no")
 
 map_unusable_vars<-c("sighting_id",
                      "date",
