@@ -30,7 +30,7 @@ df<-tibble(list_col=results)%>%
   hoist(list_col,'_tags')%>%
   hoist(list_col,'_notes')%>%
   hoist(list_col,'_validation_status')%>%
-  unnest_wider('_geolocation', names_repair = "unique")%>%
+  unnest_wider('_geolocation', names_repair = "unique", names_sep='_')%>%
   unnest_wider(list_col, names_repair = "unique")%>%
   rename("trip_id"="_id")%>%
   select(-'Faune/trichodesmium_pct')%>%
