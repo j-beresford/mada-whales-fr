@@ -130,7 +130,6 @@ fluidPage(theme=shinytheme("cerulean"),
           tabPanel("Annual sightings",plotOutput('plotSightings',width="100%")),
           tabPanel("Known Sharks",plotOutput('plotSharks',width="100%")),
           tabPanel("New Sharks",
-                   plotOutput('plotRecurrence',width="100%"),
                    plotOutput('plotNewSharkRate',width="100%")),
           tabPanel("Megafauna",plotOutput('plotMegaf',width="100%"))))
 )))
