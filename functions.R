@@ -109,9 +109,10 @@ mapUpdateKnownSharks <- function() {
     filter(!is.na(i3s_id))%>%
     select(i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey,survey_start)%>%
     mutate(size=as.numeric(size))%>%
+    mutate(size=round(size,2))%>%
     mutate(survey_start=as_date(survey_start))%>%
     group_by(i3s_id)%>%
-    mutate("First sighting" = year(min(survey_start)))%>%
+    mutate("First sighting" = as_factor(year(min(survey_start))))%>%
     mutate("Total sightings"=n())%>%
     mutate(survey_start=min(survey_start))%>%
     mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
@@ -120,7 +121,7 @@ mapUpdateKnownSharks <- function() {
     mutate(tag=sum(tag=="yes",na.rm=TRUE))%>%
     mutate(drone=sum(drone=="yes",na.rm=TRUE))%>%
     mutate(prey=sum(prey=="yes",na.rm=TRUE))%>%
-    mutate(size=mean(size,na.rm=TRUE))%>%
+    mutate(size=round(mean(size,na.rm=TRUE),2))%>%
     mutate(sex=case_when(
       mean(sex=="male",na.rm=TRUE)>mean(sex=="female",na.rm=TRUE)~"male",
       mean(sex=="male",na.rm=TRUE)<mean(sex=="female",na.rm=TRUE)~"female",
@@ -128,7 +129,7 @@ mapUpdateKnownSharks <- function() {
     ungroup()%>%
     distinct()%>%
     rename("I3S ID"=i3s_id,"Size (mean)"=size,"Sex (mode)"=sex,
-           "First sighting"=survey_start,"Identified scars"=scars,
+           "Identified scars"=scars,
            "Left ID"=left_id,"Right ID"=right_id,
            "Tag count"=tag,"Drone measurements"=drone,"Prey samples"=prey)%>%
     select("First sighting", everything())
@@ -153,7 +154,7 @@ mapUpdateUniqueTripSightings <- function() {
     mutate(tag=sum(tag=="yes",na.rm=TRUE))%>%
     mutate(drone=sum(drone=="yes",na.rm=TRUE))%>%
     mutate(prey=sum(prey=="yes",na.rm=TRUE))%>%
-    mutate(size=mean(size,na.rm=TRUE))%>%
+    mutate(size=round(mean(size,na.rm=TRUE),2))%>%
     mutate(sex=case_when(
       mean(sex=="male",na.rm=TRUE)>mean(sex=="female",na.rm=TRUE)~"male",
       mean(sex=="male",na.rm=TRUE)<mean(sex=="female",na.rm=TRUE)~"female",
@@ -184,7 +185,7 @@ mapUpdateUniqueYearlySightings <- function() {
     mutate(tag=sum(tag=="yes",na.rm=TRUE))%>%
     mutate(drone=sum(drone=="yes",na.rm=TRUE))%>%
     mutate(prey=sum(prey=="yes",na.rm=TRUE))%>%
-    mutate(size=mean(size,na.rm=TRUE))%>%
+    mutate(size=round(mean(size,na.rm=TRUE),2))%>%
     mutate(sex=case_when(
       mean(sex=="male",na.rm=TRUE)>mean(sex=="female",na.rm=TRUE)~"male",
       mean(sex=="male",na.rm=TRUE)<mean(sex=="female",na.rm=TRUE)~"female",
@@ -205,7 +206,7 @@ mapUpdateUniqueWeeklySightings <- function() {
     filter(!is.na(i3s_id))%>%
     mutate(week=floor_date(as_date(survey_start),"weeks",week_start = 1))%>%
     select(week,i3s_id,size,sex,scars,left_id,right_id,tag,drone,prey)%>%
-    mutate(size=as.numeric(size))%>%
+    mutate(size=round(as.numeric(size),2))%>%
     group_by(i3s_id,week)%>%
     mutate("Total weekly sightings"=n())%>%
     mutate(scars=if_else(sum(scars=="yes",na.rm=TRUE)>0,"yes","no"))%>%
